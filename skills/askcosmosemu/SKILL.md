@@ -22,7 +22,16 @@ On Linux/Mac:
 find ~/.claude -name "askcosmosemu.cs" 2>/dev/null | head -1
 ```
 
-Store this path as `SCRIPT_PATH`. All commands below use `dotnet run "$SCRIPT_PATH"`.
+Store the **directory** containing the script as `SCRIPT_DIR`:
+```bash
+SCRIPT_DIR=$(dirname "$(find "$USERPROFILE/.claude" -name "askcosmosemu.cs" 2>/dev/null | head -1)")
+```
+
+**IMPORTANT:** Always run commands by cd-ing into `SCRIPT_DIR` first. Running `dotnet run` from a directory that contains a `.csproj` file causes dotnet to pick up that project instead of treating the script as a file-based program.
+
+```bash
+cd "$SCRIPT_DIR" && dotnet run askcosmosemu.cs <command> [args]
+```
 
 ## Connection Setup (First Run)
 
@@ -43,7 +52,7 @@ Do not guess values. Do not attempt to connect without confirmed credentials.
 ### Verify emulator is reachable
 
 ```bash
-dotnet run "$SCRIPT_PATH" verify
+cd "$SCRIPT_DIR" && dotnet run askcosmosemu.cs verify
 ```
 
 **Success:** `{"status":"ok","endpoint":"...","latency_ms":N}`
@@ -52,7 +61,7 @@ dotnet run "$SCRIPT_PATH" verify
 ### Verify database exists
 
 ```bash
-dotnet run "$SCRIPT_PATH" verify --db <database-name>
+cd "$SCRIPT_DIR" && dotnet run askcosmosemu.cs verify --db <database-name>
 ```
 
 **Success:** `{"status":"ok","endpoint":"...","database":"...","latency_ms":N}`
@@ -60,7 +69,7 @@ dotnet run "$SCRIPT_PATH" verify --db <database-name>
 ### Verify database and container exist
 
 ```bash
-dotnet run "$SCRIPT_PATH" verify --db <database-name> --cont <container-name>
+cd "$SCRIPT_DIR" && dotnet run askcosmosemu.cs verify --db <database-name> --cont <container-name>
 ```
 
 **Success:** `{"status":"ok","endpoint":"...","database":"...","container":"...","latency_ms":N}`
@@ -68,7 +77,7 @@ dotnet run "$SCRIPT_PATH" verify --db <database-name> --cont <container-name>
 ### Query documents
 
 ```bash
-dotnet run "$SCRIPT_PATH" query --db <database-name> --cont <container-name> --sql "<sql>" [--limit N]
+cd "$SCRIPT_DIR" && dotnet run askcosmosemu.cs query --db <database-name> --cont <container-name> --sql "<sql>" [--limit N]
 ```
 
 - Default `--limit` is **5** if not specified
@@ -78,13 +87,13 @@ dotnet run "$SCRIPT_PATH" query --db <database-name> --cont <container-name> --s
 **Examples:**
 ```bash
 # Check document count
-dotnet run "$SCRIPT_PATH" query --db mydb --cont users --sql "SELECT VALUE COUNT(1) FROM c"
+cd "$SCRIPT_DIR" && dotnet run askcosmosemu.cs query --db mydb --cont users --sql "SELECT VALUE COUNT(1) FROM c"
 
 # Get first 3 documents matching a condition
-dotnet run "$SCRIPT_PATH" query --db mydb --cont users --sql "SELECT * FROM c WHERE c.active = true" --limit 3
+cd "$SCRIPT_DIR" && dotnet run askcosmosemu.cs query --db mydb --cont users --sql "SELECT * FROM c WHERE c.active = true" --limit 3
 
 # Get a specific document by id
-dotnet run "$SCRIPT_PATH" query --db mydb --cont users --sql "SELECT * FROM c WHERE c.id = 'user-123'" --limit 1
+cd "$SCRIPT_DIR" && dotnet run askcosmosemu.cs query --db mydb --cont users --sql "SELECT * FROM c WHERE c.id = 'user-123'" --limit 1
 ```
 
 ## Interpreting Results
