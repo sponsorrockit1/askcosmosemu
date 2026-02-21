@@ -1,0 +1,13 @@
+{
+  "name": "askcosmosemu",
+  "description": "Read-only skill for agents to verify and query a local Azure Cosmos DB emulator",
+  "version": "1.0.0",
+  "author": {
+    "name": "Steve",
+    "email": ""
+  },
+  "homepage": "https://github.com/sponsorrockit1/askcosmosemu",
+  "repository": "https://github.com/sponsorrockit1/askcosmosemu",
+  "license": "MIT",
+  "keywords": ["cosmos", "cosmosdb", "emulator", "verify", "query", "azure"]
+}
